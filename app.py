@@ -20,7 +20,7 @@ OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 openai.api_key = OPENAI_API_KEY
 
 # In-memory "database" - replace with a proper database for production use.
-user_first_time = set()
+user_first_time = {}
 
 def send_sms(to_number, msg):
     twilio_client = Client(ACCOUNT_SID, AUTH_TOKEN)
@@ -63,7 +63,7 @@ def process_sms():
     response = MessagingResponse()
 
     if sender_number not in user_first_time:
-        user_first_time.add(sender_number)
+        user_first_time[sender_number] = message_body
         send_sms(sender_number, "Terms of Service: [Link to ToS page] Please accept by replying 'Accept'.")
 
     elif message_body.lower() == 'accept':
