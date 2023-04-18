@@ -33,13 +33,27 @@ def send_sms(to_number, msg):
 def gpt_answer(prompt):
     gpt_response = openai.Completion.create(
         engine="davinci-codex",
-        prompt="{}".format(prompt),
-        max_tokens=15,  # Adjust this to modify the answer length
+        prompt=(
+            f"{prompt}\n\n"
+            f"1. {prompt} - Simple Answer:\n"
+            f"2. {prompt} - Include a link:\n"
+        ),
+        max_tokens=100,  # Adjust this to control the answer length
         n=1,
         stop=None,
         temperature=0.5,
     )
-    return gpt_response.choices[0].text.strip()
+    response_text = gpt_response.choices[0].text.strip()
+
+    # Extract the Simple Answer and Answer with Link sections
+    response_parts = response_text.split("1.")
+    answer_simple = response_parts[1].split("2.")[0].strip()
+    answer_with_link = response_parts[1].split("2.")[1].strip()
+
+    if "LINK" in answer_with_link:
+        return answer_with_link
+    return answer_simple
+
 
 @app.route("/sms", methods=["POST"])
 def process_sms():
