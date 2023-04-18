@@ -33,8 +33,8 @@ def send_sms(to_number, msg):
 def gpt_answer(prompt):
     # Initialize the messages list for the Chat API
     messages = [
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": prompt},
+#        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": prompt + ". If you deem it helpful for the person reading the answer, please include 1-2 links in the answer"},
     ]
 
     # Use the Chat API to get the model's response
