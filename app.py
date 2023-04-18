@@ -31,28 +31,22 @@ def send_sms(to_number, msg):
     )
 
 def gpt_answer(prompt):
-    gpt_response = openai.Completion.create(
-        engine="davinci-codex",
-        prompt=(
-            f"{prompt}\n\n"
-            f"1. {prompt} - Simple Answer:\n"
-            f"2. {prompt} - Include a link:\n"
-        ),
-        max_tokens=100,  # Adjust this to control the answer length
-        n=1,
-        stop=None,
-        temperature=0.5,
+    # Initialize the messages list for the Chat API
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": prompt},
+    ]
+
+    # Use the Chat API to get the model's response
+    gpt_response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=messages,
     )
-    response_text = gpt_response.choices[0].text.strip()
 
-    # Extract the Simple Answer and Answer with Link sections
-    response_parts = response_text.split("1.")
-    answer_simple = response_parts[1].split("2.")[0].strip()
-    answer_with_link = response_parts[1].split("2.")[1].strip()
+    # Extract the answer from the model's response
+    answer = gpt_response.choices[0].message.content.strip()
 
-    if "LINK" in answer_with_link:
-        return answer_with_link
-    return answer_simple
+    return answer
 
 
 @app.route("/sms", methods=["POST"])
