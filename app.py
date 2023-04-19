@@ -39,7 +39,7 @@ def gpt_answer(prompt):
 
     # Use the Chat API to get the model's response
     gpt_response = openai.ChatCompletion.create(
-        model="gpt-4",
+        model="gpt-3.5-turbo",
         messages=messages,
     )
 
@@ -60,7 +60,7 @@ def process_sms():
         user_first_time[sender_number] = message_body
         send_sms(sender_number, "Terms of Service: [Link to ToS page] Please accept by replying 'Accept'.")
 
-    elif message_body.lower() == 'accept':
+    elif message_body.lower() == 'accept' or message_body.lower() == 'yes' or message_body.lower() == 'y':
         answer = gpt_answer(user_first_time[sender_number])
         send_sms(sender_number, f"Thank you for accepting the Terms of Service. Here's the answer to your question: {answer}")
     else:
