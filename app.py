@@ -19,9 +19,6 @@ AUTH_TOKEN = os.environ["TWILIO_AUTH_TOKEN"]
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 openai.api_key = OPENAI_API_KEY
 
-# In-memory "database" - replace with a proper database for production use.
-user_first_time = {}
-
 def send_sms(to_number, msg):
     twilio_client = Client(ACCOUNT_SID, AUTH_TOKEN)
     twilio_client.messages.create(
@@ -39,7 +36,7 @@ def gpt_answer(prompt):
 
     # Use the Chat API to get the model's response
     gpt_response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=messages,
     )
 
@@ -48,7 +45,6 @@ def gpt_answer(prompt):
 
     return answer
 
-
 @app.route("/sms", methods=["POST"])
 def process_sms():
     sender_number = request.form["From"]
@@ -56,20 +52,8 @@ def process_sms():
 
     response = MessagingResponse()
 
-    if sender_number not in user_first_time:
-        user_first_time[sender_number] = message_body
-        send_sms(sender_number, "Terms of Service: [Link to ToS page] Please accept by replying 'Accept'.")
-
-    elif message_body.lower() == 'accept' or message_body.lower() == 'yes' or message_body.lower() == 'y':
-        answer = gpt_answer(user_first_time[sender_number])
-        send_sms(sender_number, f"Thank you for accepting the Terms of Service. Here's the answer to your question: {answer}")
-    else:
-        # Save the question before sending terms
-        if sender_number in user_first_time:
-            user_first_time[sender_number] = message_body
-        
-        answer = gpt_answer(message_body)
-        send_sms(sender_number, answer)
+    answer = gpt_answer(message_body)
+    send_sms(sender_number, answer)
 
     return str(response)
 
