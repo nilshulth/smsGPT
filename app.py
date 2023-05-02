@@ -49,7 +49,7 @@ def gpt_answer(prompt):
 def process_sms():
     sender_number = request.form["From"]
     message_body = request.form["Body"]
-    Print("Received an SMS '" + message_body + "' from: " + sender_number)
+    print("Received an SMS '" + message_body + "' from: " + sender_number)
 
     response = MessagingResponse()
 
