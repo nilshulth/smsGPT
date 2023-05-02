@@ -4,16 +4,8 @@ from flask import Flask, request
 from twilio.twiml.messaging_response import MessagingResponse
 from twilio.rest import Client
 import openai
-import logging
 
 app = Flask(__name__)
-
-handler = logging.StreamHandler()
-handler.setLevel(logging.INFO)
-handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s'))
-
-# Add the handler to the app's logger
-app.logger.addHandler(handler)
 
 # Load environment variables from credentials.env
 load_dotenv(".env")
@@ -36,8 +28,6 @@ def send_sms(to_number, msg):
     )
 
 def gpt_answer(prompt):
-    app.logger.info("Prompt: " + prompt)
-    print("Prompt: " + prompt)
     # Initialize the messages list for the Chat API
     messages = [
 #        {"role": "system", "content": "You are a helpful assistant."},
@@ -59,7 +49,7 @@ def gpt_answer(prompt):
 def process_sms():
     sender_number = request.form["From"]
     message_body = request.form["Body"]
-    app.logger.info("Received an SMS '" + message_body + "' from: " + sender_number)
+    Print("Received an SMS '" + message_body + "' from: " + sender_number)
 
     response = MessagingResponse()
 
