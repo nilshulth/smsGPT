@@ -37,6 +37,7 @@ def send_sms(to_number, msg):
 
 def gpt_answer(prompt):
     app.logger.info("Prompt: " + prompt)
+    print("Prompt: " + prompt)
     # Initialize the messages list for the Chat API
     messages = [
 #        {"role": "system", "content": "You are a helpful assistant."},
