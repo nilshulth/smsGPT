@@ -28,6 +28,7 @@ def send_sms(to_number, msg):
     )
 
 def gpt_answer(prompt):
+    app.logger.info("Prompt: " + prompt)
     # Initialize the messages list for the Chat API
     messages = [
 #        {"role": "system", "content": "You are a helpful assistant."},
@@ -49,6 +50,7 @@ def gpt_answer(prompt):
 def process_sms():
     sender_number = request.form["From"]
     message_body = request.form["Body"]
+    app.logger.info("Received an SMS '" + message_body + "' from: " + sender_number)
 
     response = MessagingResponse()
 
